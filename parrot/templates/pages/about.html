@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block background_image %}style="background-image: url('{% static "assets/img/about-bg.jpg"%}')"{% endblock background_image %}
+
+{% block header_titles %}
+<h1>A propos de moi</h1>
+<span class="subheading">Voici ce que je fais...</span>
+{% endblock header_titles %}
+
+{% block content %}
+<main class="mb-4">
+    <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <p>Je suis un développeur passionné. J'ai découvert la programmation en 2021 avec <a href="https://www.openclassrooms.com/">Openclassrooms.com</a></p>
+                <p>J'ai décidé de partager et de proposer des solutions simples, en français, aux problèmes les plus fréquemment rencontrés lors de l'apprentissage du framework Django.</p>                
+                <p>Le code de ce site est libre de droit et est disponible <a href="https://github.com/antoine71/basic_blog">ici.</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+{% endblock content %}

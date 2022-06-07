@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+            <!-- Post preview-->
+            {% if tweets.meta.result_count %}
+
+            {% for tweet in tweets.data %}
+
+            <div class="post-preview">
+                <p class="card-text">{{ tweet.text }}<p>
+                {% if tweet.attachments %}
+                {% for media in tweet.attachments.media %}
+                {% if media.type == 'photo' %}
+                <img src="{{ media.url }}" class="img-fluid" alt="">
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                
+                <p class="post-meta">
+                    Tweeted by
+                    <a href="#!">{{ username }}</a>
+                    on {{ tweet.created_at.strftime('%d %B %Y') }} at {{ tweet.created_at.strftime('%H:%M') }}
+                </p>
+            </div>
+            <!-- Divider-->
+            <hr class="my-4" />
+
+            {% endfor %}
+            
+            {% else %}
+
+            <h3 class="post-subtitle mb-4">{{ username }} has not available tweets.</h3>
+
+            {% endif %}
+
+            <!-- Pager-->
+            {% if tweets.meta.next_token %}
+            <div class="d-flex justify-content-end mb-4"><a href="{{ url_for('list_tweets', username=username)}}?cursor={{ tweets.meta.next_token }}"}><div class="btn btn-primary text-uppercase">Next tweets</div></a></div>
+            {% else %}
+            <div class="d-flex justify-content-end mb-4"><div class="btn btn-primary text-uppercase">End of tweets</div></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

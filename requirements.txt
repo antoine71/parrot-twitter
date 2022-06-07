@@ -1,0 +1,4 @@
+requests==2.27.1
+pytest==7.1.2
+coverage==6.4.1
+gunicorn==20.1.0
