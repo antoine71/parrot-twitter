@@ -1,12 +1,22 @@
-from os import environ
+from os import getenv
 
 from flask import Flask, render_template, request, redirect, url_for, flash
+from dotenv import load_dotenv
 
-from utils.functions import get_tweets, load_media_images, load_dates
+from .functions import (
+    get_tweets, 
+    load_tweet_text,
+)
+
+
+load_dotenv()
+SECRET_KEY=getenv('SECRET_KEY')
+BEARER_TOKEN=getenv('BEARER_TOKEN')
+
 
 app = Flask(__name__)
 app.config.from_mapping(
-    SECRET_KEY=environ.get('SECRET_KEY'),
+    SECRET_KEY=SECRET_KEY,
 )
 
 @app.route("/", methods=['GET', 'POST'])
@@ -24,10 +34,9 @@ def list_tweets(username):
         next_token = request.args.get('cursor')
     else:
         next_token = ''
-    tweets = get_tweets(username, next_token=next_token)
+    tweets = get_tweets(username, bearer_token=BEARER_TOKEN, next_token=next_token)
     if tweets:
-        tweets = load_media_images(tweets)
-        tweets = load_dates(tweets)
+        tweets = load_tweet_text(tweets)
         return render_template('parrot/index.html', tweets=tweets, username=username)
     else:
         error = f'The user {username} does not exists'

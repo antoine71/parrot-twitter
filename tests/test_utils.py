@@ -1,6 +1,17 @@
 import datetime
 
-from utils.functions import load_media_images, convert_date, load_dates
+from parrot.functions import (
+    load_media_images, 
+    convert_date, 
+    load_dates, 
+    load_mentions,
+    parse_url
+)
+
+def test_parse_url():
+    url = 'https://url.com'
+    string = f'123 {url} 1234'
+    assert url == parse_url(string)
 
 
 def test_load_media_images():

@@ -75,4 +75,6 @@ The report will be created in the subfolder `htmlcov/`.
 
 ## Todo
 
-Add hyperlink to usernames in the tweet feed
+Allow Video display
+Improve twitter short url resolution time
+Improve frond en display

@@ -12,7 +12,7 @@
             {% for tweet in tweets.data %}
 
             <div class="post-preview">
-                <p class="card-text">{{ tweet.text }}<p>
+                <p class="card-text">{{ tweet.text | safe }}<p>
                 {% if tweet.attachments %}
                 {% for media in tweet.attachments.media %}
                 {% if media.type == 'photo' %}
@@ -23,7 +23,7 @@
                 
                 <p class="post-meta">
                     Tweeted by
-                    <a href="#!">{{ username }}</a>
+                    <a href="{{ url_for('list_tweets', username=username)}}">{{ username }}</a>
                     on {{ tweet.created_at.strftime('%d %B %Y') }} at {{ tweet.created_at.strftime('%H:%M') }}
                 </p>
             </div>
