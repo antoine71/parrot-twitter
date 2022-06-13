@@ -96,7 +96,7 @@ def load_urls(tweets):
         while parse_url(tweet['text']):
             short_url = parse_url(tweet['text'])
             url = requests.head(short_url).headers['location']
-            if not url.startswith('https://twitter.com'):
+            if not url.startswith('https://twitter.com') or not url.endswith('...'):
                 url_showname = url if len(url) < 50 else f'{url[:47]}...'
                 tweet['text'] = tweet['text'].replace(short_url, f'<a href="{url}">{url_showname}</a>')
             else:
