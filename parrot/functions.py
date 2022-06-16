@@ -1,7 +1,10 @@
-from ast import parse
+import asyncio
+
+import aiohttp
 import requests, datetime
 
 from flask import url_for
+
 
 
 def load_tweet_text(tweets):
@@ -9,7 +12,7 @@ def load_tweet_text(tweets):
     tweets = load_dates(tweets)
     tweets = load_mentions(tweets)
     tweets = load_br(tweets)
-    tweets = load_urls(tweets)
+    tweets = asyncio.run(load_urls(tweets))
     return tweets
 
 
@@ -89,18 +92,28 @@ def load_mentions(tweets):
     return tweets
 
 
-def load_urls(tweets):
-    if tweets['meta']['result_count'] == 0:
-        return tweets
-    for tweet in tweets['data']:
-        while parse_url(tweet['text']):
-            short_url = parse_url(tweet['text'])
-            url = requests.head(short_url).headers['location']
-            if not url.startswith('https://twitter.com') or not url.endswith('...'):
+async def load_urls(tweets):
+
+    async def resolve_short_url(session, short_url):
+        async with session.head(short_url) as resp:
+            url = resp.headers['location']
+            if not url.startswith('https://twitter.com'):
                 url_showname = url if len(url) < 50 else f'{url[:47]}...'
-                tweet['text'] = tweet['text'].replace(short_url, f'<a href="{url}">{url_showname}</a>')
+                return f'<a href="{url}">{url_showname}</a>'
             else:
-                tweet['text'] = tweet['text'].replace(short_url, '')
+                return ''
+
+    async with aiohttp.ClientSession() as session:
+        if tweets['meta']['result_count'] == 0:
+            return tweets
+        for tweet in tweets['data']:
+                while parse_url(tweet['text']):
+                    short_url = parse_url(tweet['text'])
+                    if short_url.endswith('…'):
+                        tweet['text'] = tweet['text'].replace(short_url, '')
+                    else:
+                        tweet['text'] = tweet['text'].replace(short_url, await resolve_short_url(session, short_url))
+    
     return tweets       
 
 
