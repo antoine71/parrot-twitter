@@ -65,6 +65,7 @@ def load_br(tweets):
         tweet['text'] = tweet['text'].replace('\n', '<br>')
     return tweets   
 
+
 def convert_date(twitter_date):
     return datetime.datetime.strptime(twitter_date[:16], '%Y-%m-%dT%H:%M')
 

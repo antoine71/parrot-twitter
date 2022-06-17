@@ -5,11 +5,36 @@ from parrot.functions import (
     convert_date, 
     load_dates, 
     load_mentions,
-    parse_url
+    parse_url,
+    get_tweets
 )
 
+
+def test_get_tweets(monkeypatch):
+
+    class MockResponse:
+        def __init__(self, status_code):
+            self.status_code = status_code
+
+        def json(*args, **kwargs):
+            return 'json response'
+
+    class MockRequest:
+        
+        def get(self, url, headers):
+            if 'good token' in headers['Authorization']:
+                return MockResponse(200)
+            else:
+                return MockResponse(403)
+
+    monkeypatch.setattr('parrot.functions.requests', MockRequest())
+
+    assert get_tweets('username','good token') == 'json response'
+    assert get_tweets('username', 'wrong token') == {}
+
+
 def test_parse_url():
-    url = 'https://url.com'
+    url = 'https://t.co/url'
     string = f'123 {url} 1234'
     assert url == parse_url(string)
 
